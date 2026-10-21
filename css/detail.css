@@ -68,54 +68,38 @@
   background:var(--orange); color:#fff8ef; font-weight:600; border-color:transparent;
 }
 
-/* ---------- tombol toggle sidebar: hamburger pojok kiri bawah (desktop hidden) ---------- */
+/* ---------- tombol toggle sidebar: muncul di mobile, pojok kiri bawah ---------- */
 .sidebar-toggle{
   display: none;
   position: absolute;
   left: 16px;
   bottom: 16px;
   z-index: 7;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 13px;
-  background: rgba(14,12,10,0.82);
+  background: rgba(14,12,10,0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: rgba(240,232,216,0.85);
-  font-size: 0;   /* sembunyikan teks lama */
+  color: rgba(240,232,216,0.9);
   transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
-.sidebar-toggle::before {
-  /* ikon hamburger via CSS — 3 garis */
-  content: "";
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 2px;
-  box-shadow: 0 5px 0 currentColor, 0 -5px 0 currentColor;
+.sidebar-toggle svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
 }
-.sidebar-toggle:hover{ background: rgba(201,99,31,0.85); color: #fff8ef; }
-.sidebar-toggle:active{ transform: scale(0.93); }
-
-/* Saat sidebar open: ikon berubah jadi X */
-#detail-sidebar.open ~ .sidebar-toggle::before,
-.sidebar-toggle.open::before {
-  content: "";
-  width: 16px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 2px;
-  box-shadow: none;
-  transform: rotate(45deg);
-  position: relative;
-  top: 0;
-}
+.sidebar-toggle .icon-open  { display: block; }
+.sidebar-toggle .icon-close { display: none;  }
+.sidebar-toggle.open .icon-open  { display: none;  }
+.sidebar-toggle.open .icon-close { display: block; }
+.sidebar-toggle:hover { background: rgba(201,99,31,0.88); color: #fff8ef; }
+.sidebar-toggle:active { transform: scale(0.93); }
 
 #detail-hint{
   position:absolute; bottom:16px; right:16px; left:auto; z-index:4;

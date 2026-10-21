@@ -20,7 +20,18 @@
     <button id="btn-reset-tampilan" class="topbar-btn secondary">Reset Tampilan</button>
   </div>
 
-  <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button">&#9776; Daftar Komponen</button>
+  <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button">
+    <!-- ikon hamburger: tampil saat sidebar tertutup -->
+    <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="3" y1="6"  x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+    <!-- ikon X: tampil saat sidebar terbuka -->
+    <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </svg>
+  </button>
 
   <aside id="detail-sidebar">
     <div id="info-card">

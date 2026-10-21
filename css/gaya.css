@@ -497,7 +497,7 @@ canvas{display:block;}
                 transform 0.15s ease, box-shadow 0.2s ease;
   }
 
-  /* Panel: bottom-sheet */
+  /* Panel: bottom-sheet, max 50vh agar scene 3D tetap terlihat */
   #iot-dashboard {
     top: auto;
     left: 0;
@@ -508,7 +508,7 @@ canvas{display:block;}
     border-top: 1px solid rgba(255,255,255,0.1);
     border-radius: 20px 20px 0 0;
     padding: 8px 14px 28px;
-    max-height: 55vh;
+    max-height: 50vh;
     overflow-y: auto;
     transform-origin: bottom center;
     box-shadow: 0 -8px 40px rgba(0,0,0,0.55);
@@ -552,7 +552,7 @@ canvas{display:block;}
   }
 
   #iot-dashboard {
-    max-height: 60vh;
+    max-height: 48vh;   /* lebih pendek agar scene tetap terlihat */
     padding: 8px 11px 24px;
   }
 
