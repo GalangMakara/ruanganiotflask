@@ -346,9 +346,25 @@ function createDashboard() {
   elAlarmBanner = wrapper.querySelector("#db-alarm-banner");
 
   /* ---- Toggle show/hide ---- */
-  let visible = true;
+  // Di mobile (layar sempit), dashboard mulai dalam keadaan TERSEMBUNYI
+  // supaya scene 3D tetap terlihat saat pertama kali buka.
+  const isMobile = () => window.innerWidth <= 768;
+  let visible = !isMobile();
+
   const iconPanel = toggleBtn.querySelector("#db-icon-panel");
   const iconClose = toggleBtn.querySelector("#db-icon-close");
+
+  // Terapkan state awal
+  if (!visible) {
+    wrapper.classList.add("db-hidden");
+    iconPanel.style.display = "block";
+    iconClose.style.display = "none";
+    toggleBtn.title = "Tampilkan Dashboard";
+  } else {
+    iconPanel.style.display = "none";
+    iconClose.style.display = "block";
+    toggleBtn.title = "Sembunyikan Dashboard";
+  }
 
   toggleBtn.addEventListener("click", () => {
     visible = !visible;
