@@ -508,7 +508,7 @@ canvas{display:block;}
     border-top: 1px solid rgba(255,255,255,0.1);
     border-radius: 20px 20px 0 0;
     padding: 8px 14px 28px;
-    max-height: 50vh;
+    max-height: 42vh;
     overflow-y: auto;
     transform-origin: bottom center;
     box-shadow: 0 -8px 40px rgba(0,0,0,0.55);
@@ -552,7 +552,7 @@ canvas{display:block;}
   }
 
   #iot-dashboard {
-    max-height: 48vh;   /* lebih pendek agar scene tetap terlihat */
+    max-height: 40vh;   /* lebih pendek agar scene tetap terlihat */
     padding: 8px 11px 24px;
   }
 

@@ -173,6 +173,27 @@ function primeHighlight(obj) {
 const listEl = document.getElementById("komponen-list");
 const infoTitleEl = document.getElementById("info-title");
 const infoDescEl = document.getElementById("info-desc");
+const sidebarEl = document.getElementById("detail-sidebar");
+const toggleBtn = document.getElementById("btn-toggle-sidebar");
+
+// Update ikon tombol toggle (hamburger ↔ X)
+function updateToggleIcon() {
+  if (sidebarEl.classList.contains("open")) {
+    toggleBtn.classList.add("open");
+    toggleBtn.title = "Tutup Daftar Komponen";
+  } else {
+    toggleBtn.classList.remove("open");
+    toggleBtn.title = "Buka Daftar Komponen";
+  }
+}
+
+// Tutup sidebar saat komponen dipilih di mobile (biar model terlihat)
+function maybeCloseSidebar() {
+  if (window.innerWidth <= 760 && sidebarEl.classList.contains("open")) {
+    sidebarEl.classList.remove("open");
+    updateToggleIcon();
+  }
+}
 
 const categoriesOrder = ["Bodi & Panel", "Aliran Udara", "Elektronik", "Pipa & Struktur"];
 const byCategory = new Map();
@@ -275,34 +296,10 @@ document.getElementById("btn-reset-tampilan").addEventListener("click", () => {
   controls.autoRotate = true;
 });
 
-const sidebarEl = document.getElementById("detail-sidebar");
-const toggleBtn = document.getElementById("btn-toggle-sidebar");
-
-// Di mobile: sidebar mulai tersembunyi, harus klik tombol untuk buka
-// Di desktop: sidebar selalu terlihat (CSS posisi absolute biasa)
-function updateToggleIcon() {
-  if (sidebarEl.classList.contains("open")) {
-    toggleBtn.classList.add("open");
-    toggleBtn.title = "Tutup Daftar Komponen";
-  } else {
-    toggleBtn.classList.remove("open");
-    toggleBtn.title = "Buka Daftar Komponen";
-  }
-}
-
 toggleBtn.addEventListener("click", () => {
   sidebarEl.classList.toggle("open");
   updateToggleIcon();
 });
-
-// Saat komponen dipilih di mobile: otomatis tutup sidebar supaya
-// model 3D terlihat
-function maybeCloseSidebar() {
-  if (window.innerWidth <= 760 && sidebarEl.classList.contains("open")) {
-    sidebarEl.classList.remove("open");
-    updateToggleIcon();
-  }
-}
 
 updateToggleIcon();
 
