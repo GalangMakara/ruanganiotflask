@@ -154,11 +154,11 @@
 
   #info-card{ padding: 16px 16px 12px; }
 
-  /* Tombol toggle: pojok KANAN ATAS */
+  /* Tombol toggle: pojok KANAN ATAS, di bawah topbar */
   .sidebar-toggle{
     display: flex;
     right: 16px;
-    top: 16px;
+    top: 72px;    /* turun ke bawah topbar agar tidak menimpa tombol Reset */
     left: auto;
     bottom: auto;
   }
@@ -197,7 +197,7 @@
 
   .sidebar-toggle{
     right: 12px;
-    top: 12px;
+    top: 68px;
     left: auto;
     bottom: auto;
     width: 42px;
@@ -214,7 +214,7 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
     .sidebar-toggle{
-      top: calc(12px + env(safe-area-inset-top));
+      top: calc(68px + env(safe-area-inset-top));
       right: calc(12px + env(safe-area-inset-right));
     }
     #detail-topbar{
