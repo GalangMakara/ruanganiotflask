@@ -30,7 +30,7 @@ import ujson
 # Ganti NAMAUSER dengan username PythonAnywhere kamu.
 # PAKAI HTTP (bukan https) supaya urequests ESP32 stabil (SSL MicroPython sering bermasalah).
 # Jangan aktifkan opsi "Force HTTPS" di tab Web PythonAnywhere, atau ESP32 akan di-redirect ke https.
-FLASK_HOST = "http://NAMAUSER.pythonanywhere.com"
+FLASK_HOST = "http://galangmakara.pythonanywhere.com"
 
 # === ALTERNATIF: SERVER LOKAL (WiFi BOE, tanpa internet) ===
 # FLASK_HOST = "http://192.168.1.X:5000"   # GANTI X dengan IP komputer (cek dengan ipconfig)

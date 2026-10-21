@@ -1,16 +1,13 @@
 # boot.py — dijalankan pertama kali saat ESP32 menyala
-# Menghubungkan ke WiFi.
+# Menghubungkan ke WiFi BOE- (open network, tanpa password)
 #
-# PENTING untuk hosting PythonAnywhere:
-#   Hotspot/router WiFi ini HARUS punya akses internet, karena ESP32
-#   akan mengirim data ke server public di pythonanywhere.com.
-#   (Bisa pakai WiFi rumah, atau hotspot HP dengan kuota data aktif.)
+# WiFi BOE- harus punya akses internet agar ESP32 bisa
+# mengirim data ke galangmakara.pythonanywhere.com
 
 import network
 import time
 
-SSID = "NAMA_HOTSPOT_ANDA"     # Ganti: nama WiFi yang punya internet
-PASSWORD = "PASSWORD_HOTSPOT"  # Ganti: password WiFi
+SSID = "BOE-"   # WiFi kantor BOE, open network tanpa password
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
@@ -21,7 +18,7 @@ def connect_wifi():
         return wlan
 
     print(f"[WiFi] Menghubungkan ke '{SSID}'...")
-    wlan.connect(SSID, PASSWORD)
+    wlan.connect(SSID)   # tanpa password untuk open network
 
     # Tunggu sampai terhubung (maks 15 detik)
     timeout = 15
@@ -34,7 +31,7 @@ def connect_wifi():
         ip, subnet, gateway, dns = wlan.ifconfig()
         print(f"[WiFi] Terhubung! IP: {ip}")
     else:
-        print("[WiFi] GAGAL terhubung ke WiFi. Cek SSID.")
+        print("[WiFi] GAGAL terhubung ke WiFi. Pastikan SSID benar.")
 
     return wlan
 
