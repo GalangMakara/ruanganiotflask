@@ -237,13 +237,16 @@ function createDashboard() {
   /* ---- Tombol toggle show/hide ---- */
   const toggleBtn = document.createElement("button");
   toggleBtn.id = "db-toggle-btn";
-  toggleBtn.title = "Sembunyikan Dashboard";
+  toggleBtn.title = "Tampilkan Dashboard";
+  // Ikon hamburger (☰) — tampil saat panel tertutup
+  // Ikon X (✕)        — tampil saat panel terbuka
   toggleBtn.innerHTML = `
-    <svg id="db-icon-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="18" height="18" rx="3"/>
-      <path d="M9 9h6M9 12h6M9 15h4"/>
+    <svg id="db-icon-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="6"  x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
     </svg>
-    <svg id="db-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+    <svg id="db-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
       <path d="M18 6L6 18M6 6l12 12"/>
     </svg>
   `;
@@ -346,32 +349,44 @@ function createDashboard() {
   elAlarmBanner = wrapper.querySelector("#db-alarm-banner");
 
   /* ---- Toggle show/hide ---- */
-  // Di mobile (layar sempit), dashboard mulai dalam keadaan TERSEMBUNYI
-  // supaya scene 3D tetap terlihat saat pertama kali buka.
+  // Di mobile: default tersembunyi. Di desktop: default terbuka.
   const isMobile = () => window.innerWidth <= 768;
   let visible = !isMobile();
 
   const iconPanel = toggleBtn.querySelector("#db-icon-panel");
   const iconClose = toggleBtn.querySelector("#db-icon-close");
 
-  // Terapkan state awal
-  if (!visible) {
-    wrapper.classList.add("db-hidden");
-    iconPanel.style.display = "block";
-    iconClose.style.display = "none";
-    toggleBtn.title = "Tampilkan Dashboard";
-  } else {
-    iconPanel.style.display = "none";
-    iconClose.style.display = "block";
-    toggleBtn.title = "Sembunyikan Dashboard";
+  function applyVisible(v) {
+    visible = v;
+    wrapper.classList.toggle("db-hidden", !v);
+    iconPanel.style.display = v ? "none"  : "block";
+    iconClose.style.display = v ? "block" : "none";
+    toggleBtn.title = v ? "Sembunyikan Dashboard" : "Tampilkan Dashboard";
+    // Geser tombol ke kanan panel saat panel terbuka di desktop
+    if (window.innerWidth > 768) {
+      toggleBtn.style.left = v ? "344px" : "16px";
+    } else {
+      toggleBtn.style.left = "16px";
+      toggleBtn.style.right = "auto";
+    }
   }
 
-  toggleBtn.addEventListener("click", () => {
-    visible = !visible;
-    wrapper.classList.toggle("db-hidden", !visible);
-    iconPanel.style.display = visible ? "none"  : "block";
-    iconClose.style.display = visible ? "block" : "none";
-    toggleBtn.title = visible ? "Sembunyikan Dashboard" : "Tampilkan Dashboard";
+  // Terapkan state awal
+  applyVisible(visible);
+
+  toggleBtn.addEventListener("click", () => applyVisible(!visible));
+
+  // Saat resize: sesuaikan posisi & state default
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      toggleBtn.style.right = "auto";
+      applyVisible(visible); // pertahankan state user
+    } else {
+      toggleBtn.style.left = "16px";
+      toggleBtn.style.right = "auto";
+      toggleBtn.style.bottom = "";
+      toggleBtn.style.top = "";
+    }
   });
 
   /* ---- Toggle kartu perangkat — kirim ke Flask ---- */

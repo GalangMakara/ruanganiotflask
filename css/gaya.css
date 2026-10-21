@@ -31,10 +31,10 @@ canvas{display:block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 #hint{
-  position:absolute; bottom:16px; right:80px; left:auto; transform:none;
+  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
   color:#d9c9acaa; font-size:11px; letter-spacing:1px; text-transform:uppercase;
   pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,.6);
-  transition:opacity .3s ease;
+  transition:opacity .3s ease; white-space:nowrap;
 }
 
 /* ---------------------------------------------------------------------
@@ -85,56 +85,61 @@ canvas{display:block;}
 
 /* =====================================================================
    DASHBOARD IOT — Smart Control Panel
-   Posisi: pojok kanan bawah, melayang di atas canvas 3D
 ===================================================================== */
 
-/* --- Tombol toggle show/hide (selalu terlihat) --- */
+/* --- Tombol toggle (hamburger ☰ / close ✕) — pojok kiri atas --- */
 #db-toggle-btn {
   position: absolute;
-  bottom: 24px;
-  right: 24px;
+  top: 16px;
+  left: 16px;
   z-index: 9;
   width: 44px;
   height: 44px;
   border-radius: 13px;
-  background: rgba(14,12,10,0.88);
+  background: rgba(14,12,10,0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: rgba(240,232,216,0.75);
-  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  color: rgba(240,232,216,0.85);
+  transition: left 0.28s cubic-bezier(.4,0,.2,1),
+              background 0.2s ease,
+              color 0.2s ease,
+              transform 0.15s ease,
+              box-shadow 0.2s ease;
 }
 #db-toggle-btn:hover {
   background: rgba(201,99,31,0.85);
   color: #fff8ef;
-  box-shadow: 0 8px 28px rgba(201,99,31,0.35);
+  box-shadow: 0 6px 20px rgba(201,99,31,0.4);
 }
 #db-toggle-btn:active { transform: scale(0.93); }
 #db-toggle-btn svg { width: 20px; height: 20px; pointer-events: none; }
 
-/* --- Panel utama dashboard --- */
+/* --- Panel utama: sidebar kiri di desktop --- */
 #iot-dashboard {
   position: absolute;
-  bottom: 78px;        /* di atas tombol toggle */
-  right: 24px;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 320px;
-  background: rgba(12, 10, 8, 0.90);
+  background: rgba(12, 10, 8, 0.92);
   backdrop-filter: blur(22px) saturate(1.5);
   -webkit-backdrop-filter: blur(22px) saturate(1.5);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 20px;
-  padding: 18px 16px 16px;
+  border: none;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0;
+  padding: 72px 16px 24px;
   z-index: 8;
-  box-shadow:
-    0 32px 72px rgba(0,0,0,0.6),
-    0 0 0 1px rgba(255,255,255,0.03) inset;
-  /* animasi show/hide */
-  transform-origin: bottom right;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+  box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+  transform-origin: left center;
   transition:
     opacity 0.28s cubic-bezier(.4,0,.2,1),
     transform 0.28s cubic-bezier(.4,0,.2,1),
@@ -142,9 +147,14 @@ canvas{display:block;}
   pointer-events: auto;
   user-select: none;
 }
+#iot-dashboard::-webkit-scrollbar { width: 5px; }
+#iot-dashboard::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+}
 #iot-dashboard.db-hidden {
   opacity: 0;
-  transform: scale(0.94) translateY(10px);
+  transform: translateX(-100%);
   pointer-events: none;
   visibility: hidden;
   transition:
@@ -344,9 +354,7 @@ canvas{display:block;}
   pointer-events: none;
 }
 .db-card.on::before  { opacity: 0.06; }
-.db-card.on {
-  border-color: rgba(255,255,255,0.12);
-}
+.db-card.on { border-color: rgba(255,255,255,0.12); }
 .db-card:hover       { background: rgba(255,255,255,0.065); }
 .db-card:hover:not(:active) { transform: translateX(-1px); }
 .db-card:active      { transform: scale(0.985); }
@@ -441,10 +449,8 @@ canvas{display:block;}
 }
 .db-card.on .db-state-text { color: var(--accent); }
 
-/* hint sudah didefinisikan di atas */
-
 /* =====================================================================
-   ALARM BANNER — muncul di dashboard saat suhu/kelembapan kritis
+   ALARM BANNER
 ===================================================================== */
 .db-alarm-banner {
   display: flex;
@@ -476,38 +482,46 @@ canvas{display:block;}
 }
 
 /* =====================================================================
-   RESPONSIF — Tablet (≤768px)
+   RESPONSIF — Tablet & Mobile (≤768px)
+   Panel berubah jadi bottom-sheet dari bawah
 ===================================================================== */
 @media (max-width: 768px) {
 
-  /* Dashboard jadi bottom-sheet: muncul dari bawah, max 55% tinggi layar */
+  /* Tombol hamburger: tetap pojok kiri atas, tidak bergeser */
+  #db-toggle-btn {
+    top: 16px;
+    left: 16px;
+    right: auto;
+    bottom: auto;
+    transition: background 0.2s ease, color 0.2s ease,
+                transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  /* Panel: bottom-sheet */
   #iot-dashboard {
-    width: 100%;
+    top: auto;
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100%;
+    border-right: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
     border-radius: 20px 20px 0 0;
-    padding: 14px 13px 24px;   /* bottom lebih besar untuk safe area iPhone */
+    padding: 8px 14px 28px;
     max-height: 55vh;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.15) transparent;
-    /* ubah asal animasi dari pojok kanan-bawah ke bawah tengah */
     transform-origin: bottom center;
-  }
-  #iot-dashboard::-webkit-scrollbar { width: 5px; }
-  #iot-dashboard::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.15);
-    border-radius: 4px;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.55);
   }
 
-  /* Saat hidden: geser ke bawah (bukan scale) */
+  /* Saat tersembunyi: geser ke bawah */
   #iot-dashboard.db-hidden {
     transform: translateY(110%);
-    opacity: 1;   /* tetap opaque, hanya geser */
+    opacity: 1;
+    visibility: hidden;
   }
 
-  /* Garis handle di atas panel (visual cue bottom-sheet) */
+  /* Handle bar visual */
   #iot-dashboard::before {
     content: "";
     display: block;
@@ -518,25 +532,10 @@ canvas{display:block;}
     margin: 0 auto 12px;
   }
 
-  /* Tombol toggle: pojok kanan bawah, di atas panel */
-  #db-toggle-btn {
-    bottom: 16px;
-    right: 16px;
-  }
-
-  /* Sembunyikan hint agar tidak tertutup dashboard */
   #hint { display: none; }
-
-  /* AC panel naik agar tidak tertutupi toggle btn */
   #ac-panel { bottom: 72px; }
-
-  /* Label AC: batasi lebar agar tidak keluar layar */
   .ac-label { max-width: min(190px, 55vw); }
-
-  /* Font sensor value sedikit lebih kecil */
   .db-sensor-value { font-size: 20px; }
-
-  /* Card perangkat: padding lebih nyaman untuk tap */
   .db-card { padding: 10px 12px; }
 }
 
@@ -545,47 +544,36 @@ canvas{display:block;}
 ===================================================================== */
 @media (max-width: 480px) {
 
-  #iot-dashboard {
-    max-height: 58vh;
-    padding: 14px 11px 28px;  /* bottom lebih besar: safe area notch iPhone */
-  }
-
   #db-toggle-btn {
-    bottom: 12px;
-    right: 12px;
     width: 42px;
     height: 42px;
+    top: 12px;
+    left: 12px;
   }
 
-  /* Header dashboard: logo lebih kecil */
+  #iot-dashboard {
+    max-height: 60vh;
+    padding: 8px 11px 24px;
+  }
+
   .db-logo { width: 30px; height: 30px; border-radius: 9px; }
   .db-logo svg { width: 14px; height: 14px; }
   .db-title { font-size: 13px; }
   .db-sub { font-size: 9px; letter-spacing: 1px; }
-
-  /* Status pill: sembunyikan teks "Online", hanya tampilkan dot */
   .db-status-text { display: none; }
   .db-status-pill { padding: 5px 7px; }
-
-  /* Sensor cards */
   .db-sensor-value { font-size: 19px; }
   .db-sensor-label { font-size: 8.5px; }
   .db-sensor-status { font-size: 9px; }
-
-  /* Cards */
   .db-card { padding: 9px 10px; gap: 9px; border-radius: 11px; }
   .db-icon { width: 32px; height: 32px; border-radius: 8px; }
   .db-icon svg { width: 15px; height: 15px; }
   .db-name { font-size: 11.5px; }
   .db-loc { font-size: 8.5px; }
-
-  /* Toggle switch */
   .db-track { width: 32px; height: 18px; }
   .db-thumb { width: 12px; height: 12px; }
   .db-card.on .db-thumb { transform: translateX(14px); }
   .db-state-text { font-size: 8px; }
-
-  /* Loading */
   #loading .ring { width: 38px; height: 38px; }
   #loading span { font-size: 10px; letter-spacing: 1.5px; }
 }
@@ -596,22 +584,19 @@ canvas{display:block;}
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   @media (max-width: 768px) {
     #iot-dashboard {
-      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
     }
     #db-toggle-btn {
-      bottom: calc(12px + env(safe-area-inset-bottom));
+      top: calc(12px + env(safe-area-inset-top));
     }
   }
 }
 
 /* =====================================================================
-   RESPONSIF — Landscape phone (tinggi ≤500px)
+   Landscape phone (tinggi ≤500px)
 ===================================================================== */
 @media (max-height: 500px) and (orientation: landscape) {
-  #iot-dashboard {
-    max-height: 75vh;
-    bottom: 0;
-  }
+  #iot-dashboard { max-height: 75vh; }
   .db-sensor-bar-bg { display: none; }
   .db-sensor-card { padding: 8px 10px; }
   .db-sensor-value { font-size: 17px; }

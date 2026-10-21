@@ -221,6 +221,7 @@ function selectComponent(key) {
   const { camPos, target, radius } = computeFraming(comp.object, new THREE.Vector3(1.1, 0.75, 1.25), 2.1, 0.14);
   tweenCameraTo(camPos, target, 850);
   focusLight.position.copy(target).add(new THREE.Vector3(0, radius * 2 + 0.15, 0));
+  maybeCloseSidebar();
 }
 
 function deselect() {
@@ -276,7 +277,34 @@ document.getElementById("btn-reset-tampilan").addEventListener("click", () => {
 
 const sidebarEl = document.getElementById("detail-sidebar");
 const toggleBtn = document.getElementById("btn-toggle-sidebar");
-toggleBtn.addEventListener("click", () => sidebarEl.classList.toggle("open"));
+
+// Di mobile: sidebar mulai tersembunyi, harus klik tombol untuk buka
+// Di desktop: sidebar selalu terlihat (CSS posisi absolute biasa)
+function updateToggleIcon() {
+  if (sidebarEl.classList.contains("open")) {
+    toggleBtn.classList.add("open");
+    toggleBtn.title = "Tutup Daftar Komponen";
+  } else {
+    toggleBtn.classList.remove("open");
+    toggleBtn.title = "Buka Daftar Komponen";
+  }
+}
+
+toggleBtn.addEventListener("click", () => {
+  sidebarEl.classList.toggle("open");
+  updateToggleIcon();
+});
+
+// Saat komponen dipilih di mobile: otomatis tutup sidebar supaya
+// model 3D terlihat
+function maybeCloseSidebar() {
+  if (window.innerWidth <= 760 && sidebarEl.classList.contains("open")) {
+    sidebarEl.classList.remove("open");
+    updateToggleIcon();
+  }
+}
+
+updateToggleIcon();
 
 /* ---------- resize ---------- */
 window.addEventListener("resize", () => {

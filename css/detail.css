@@ -68,61 +68,178 @@
   background:var(--orange); color:#fff8ef; font-weight:600; border-color:transparent;
 }
 
-/* ---------- toggle sidebar (mobile) ---------- */
+/* ---------- tombol toggle sidebar: hamburger pojok kiri bawah (desktop hidden) ---------- */
 .sidebar-toggle{
-  display:none;
-  position:absolute; right:16px; bottom:16px; z-index:7;
-  font-family:inherit; font-size:12px; letter-spacing:.5px;
-  padding:12px 16px; border-radius:999px; border:none; cursor:pointer;
-  background:var(--orange); color:#fff8ef; font-weight:600;
-  box-shadow:0 6px 18px rgba(0,0,0,.4);
+  display: none;
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 7;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: rgba(14,12,10,0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(240,232,216,0.85);
+  font-size: 0;   /* sembunyikan teks lama */
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.sidebar-toggle::before {
+  /* ikon hamburger via CSS — 3 garis */
+  content: "";
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  box-shadow: 0 5px 0 currentColor, 0 -5px 0 currentColor;
+}
+.sidebar-toggle:hover{ background: rgba(201,99,31,0.85); color: #fff8ef; }
+.sidebar-toggle:active{ transform: scale(0.93); }
+
+/* Saat sidebar open: ikon berubah jadi X */
+#detail-sidebar.open ~ .sidebar-toggle::before,
+.sidebar-toggle.open::before {
+  content: "";
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  box-shadow: none;
+  transform: rotate(45deg);
+  position: relative;
+  top: 0;
 }
 
 #detail-hint{
-  position:absolute; bottom:16px; left:16px; z-index:4;
+  position:absolute; bottom:16px; right:16px; left:auto; z-index:4;
   color:#d9c9acaa; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase;
   pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,.6);
 }
 
-/* ---------- responsif: tablet (≤760px) ---------- */
+/* =====================================================================
+   RESPONSIF — Tablet (≤760px)
+===================================================================== */
 @media (max-width: 760px){
-  /* Topbar: wrap ke 2 baris — tombol di baris atas, judul di bawah */
+
+  /* Topbar: baris 1 = dua tombol, baris 2 = judul di tengah */
   #detail-topbar{
     flex-wrap: wrap;
-    padding: 10px 12px 8px;
+    padding: 10px 12px 0;
     gap: 8px;
+    background: linear-gradient(to bottom, #14181cf0 60%, #14181c00 100%);
   }
+  #btn-kembali-ruangan { order: 1; }
+  #btn-reset-tampilan  { order: 2; margin-left: auto; }
   #detail-title{
     order: 3;
     width: 100%;
     flex-direction: row;
     justify-content: center;
-    gap: 6px;
-    padding-top: 4px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    gap: 8px;
+    padding: 6px 0 8px;
+    border-top: 1px solid rgba(255,255,255,0.07);
   }
-  #detail-title span{ font-size: 9.5px; opacity: .55; }
+  #detail-title strong{ font-size: 13px; }
+  #detail-title span{ font-size: 9px; opacity: .5; }
   .topbar-btn{ padding: 8px 12px; font-size: 10.5px; }
 
-  /* Sidebar jadi bottom-sheet */
+  /* Sidebar jadi bottom-sheet dari bawah */
   #detail-sidebar{
-    left:12px; right:12px; top:auto; bottom:0; width:auto;
-    height:62vh; border-radius:16px 16px 0 0;
-    transform:translateY(calc(100% - 54px));
-    transition:transform .3s ease;
+    left: 0; right: 0; top: auto; bottom: 0; width: auto;
+    height: 58vh;
+    border-radius: 20px 20px 0 0;
+    border-left: none; border-right: none; border-bottom: none;
+    transform: translateY(100%);   /* mulai tersembunyi */
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 -8px 40px rgba(0,0,0,.5);
   }
-  #detail-sidebar.open{ transform:translateY(0); }
-  #info-card{ padding:14px 16px; }
-  .sidebar-toggle{ display:block; }
-  #detail-hint{ display:none; }
+  #detail-sidebar.open{ transform: translateY(0); }
+
+  /* Handle bar di atas sidebar */
+  #detail-sidebar::before{
+    content: "";
+    display: block;
+    width: 36px; height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+  }
+
+  #info-card{ padding: 14px 16px; }
+
+  /* Tombol toggle: tampil di pojok kiri bawah */
+  .sidebar-toggle{
+    display: flex;
+    left: 16px;
+    bottom: 16px;
+    right: auto;
+  }
+
+  #detail-hint{ display: none; }
 }
 
-/* ---------- responsif: mobile kecil (≤480px) ---------- */
+/* =====================================================================
+   RESPONSIF — Mobile kecil (≤480px)
+===================================================================== */
 @media (max-width: 480px){
-  #detail-topbar{ padding: 8px 10px 6px; }
-  .topbar-btn{ padding: 7px 10px; font-size: 10px; }
-  #info-card h2{ font-size: 13px; }
-  #info-card p{ font-size: 12px; }
-  .komponen-item{ padding: 11px 10px; } /* naikkan ke ≥44px tap target */
-  #detail-sidebar{ height: 65vh; }
+
+  #detail-topbar{ padding: 8px 10px 0; }
+  .topbar-btn{ padding: 7px 10px; font-size: 10px; letter-spacing: .3px; }
+
+  #detail-title strong{ font-size: 12px; }
+  #detail-title span{ display: none; }
+
+  #detail-sidebar{ height: 62vh; }
+
+  #info-card{ padding: 12px 14px; }
+  #info-card h2{ font-size: 13px; margin-bottom: 6px; }
+  #info-card p{ font-size: 11.5px; }
+
+  /* Tap target komponen minimal 44px */
+  .komponen-item{ padding: 11px 10px; font-size: 12px; }
+
+  .sidebar-toggle{
+    left: 12px;
+    bottom: 12px;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* =====================================================================
+   Safe area iPhone
+===================================================================== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (max-width: 760px){
+    #detail-sidebar{
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .sidebar-toggle{
+      bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+    #detail-topbar{
+      padding-top: calc(10px + env(safe-area-inset-top));
+    }
+  }
+}
+
+/* =====================================================================
+   Landscape phone
+===================================================================== */
+@media (max-height: 500px) and (orientation: landscape){
+  #detail-sidebar{ height: 75vh; }
+  #detail-topbar{ padding-top: 6px; padding-bottom: 0; }
+  .topbar-btn{ padding: 6px 10px; }
+  #detail-title{ padding: 4px 0 5px; }
+  #info-card{ padding: 10px 14px; }
+  #info-card h2{ font-size: 13px; margin-bottom: 4px; }
+  #info-card p{ font-size: 11px; }
 }
