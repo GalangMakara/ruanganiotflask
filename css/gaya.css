@@ -1,0 +1,476 @@
+:root{
+  --cream:#e9ddc8;
+  --dark:#2b2620;
+  --wood:#5a3a24;
+  --orange:#c9631f;
+  --panel:#1c1712cc;
+}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#dfeaf7;
+  font-family: 'Georgia', 'Iowan Old Style', serif;}
+#app{position:relative;width:100vw;height:100vh;}
+canvas{display:block;}
+
+#hud{
+  position:absolute; top:0; left:0; right:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 22px;
+  pointer-events:none;
+}
+#loading{
+  position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 40%, #2b2620 0%, #14110d 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:var(--cream); z-index:10; transition:opacity .6s ease;
+}
+#loading .ring{
+  width:46px;height:46px;border-radius:50%;
+  border:3px solid #6b4a2a55; border-top-color:var(--orange);
+  animation:spin 1s linear infinite; margin-bottom:16px;
+}
+#loading span{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#hint{
+  position:absolute; bottom:16px; right:80px; left:auto; transform:none;
+  color:#d9c9acaa; font-size:11px; letter-spacing:1px; text-transform:uppercase;
+  pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,.6);
+  transition:opacity .3s ease;
+}
+
+/* ---------------------------------------------------------------------
+   PANEL INTERAKSI AC (tombol Bongkar / Keluar)
+--------------------------------------------------------------------- */
+#ac-panel{
+  position:absolute; left:50%; bottom:34px;
+  transform:translateX(-50%) translateY(14px);
+  display:flex; gap:10px;
+  background:var(--panel); backdrop-filter:blur(6px);
+  padding:10px 12px; border-radius:10px;
+  border:1px solid #ffffff22;
+  opacity:0; pointer-events:none;
+  transition:opacity .35s ease, transform .35s ease;
+  z-index:5;
+}
+#ac-panel.show{
+  opacity:1; pointer-events:auto;
+  transform:translateX(-50%) translateY(0);
+}
+.ac-btn{
+  font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase;
+  padding:10px 16px; border-radius:6px; border:none; cursor:pointer;
+  background:var(--orange); color:#fff8ef; font-weight:600;
+  transition:filter .15s ease, transform .1s ease;
+}
+.ac-btn:hover{ filter:brightness(1.1); }
+.ac-btn:active{ transform:scale(0.96); }
+.ac-btn.secondary{
+  background:transparent; color:var(--cream); border:1px solid #ffffff44;
+}
+
+/* ---------------------------------------------------------------------
+   LABEL PENJELAS MESIN DALAM AC
+--------------------------------------------------------------------- */
+#ac-labels{ position:absolute; inset:0; pointer-events:none; z-index:4; }
+.ac-label{
+  position:absolute; transform:translate(-50%,-120%);
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; letter-spacing:.4px; color:#fff8ef;
+  background:#1c1712d9; padding:5px 9px; border-radius:5px;
+  white-space:nowrap; border:1px solid #ffffff26;
+  max-width:190px; box-shadow:0 4px 16px rgba(0,0,0,.28);
+}
+.ac-label .dot{ width:6px; height:6px; border-radius:50%; background:var(--orange); flex:none; }
+.ac-label .txt{ white-space:normal; line-height:1.35; }
+
+
+/* =====================================================================
+   DASHBOARD IOT — Smart Control Panel
+   Posisi: pojok kanan bawah, melayang di atas canvas 3D
+===================================================================== */
+
+/* --- Tombol toggle show/hide (selalu terlihat) --- */
+#db-toggle-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: rgba(14,12,10,0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(240,232,216,0.75);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+#db-toggle-btn:hover {
+  background: rgba(201,99,31,0.85);
+  color: #fff8ef;
+  box-shadow: 0 8px 28px rgba(201,99,31,0.35);
+}
+#db-toggle-btn:active { transform: scale(0.93); }
+#db-toggle-btn svg { width: 20px; height: 20px; pointer-events: none; }
+
+/* --- Panel utama dashboard --- */
+#iot-dashboard {
+  position: absolute;
+  bottom: 78px;        /* di atas tombol toggle */
+  right: 24px;
+  width: 320px;
+  background: rgba(12, 10, 8, 0.90);
+  backdrop-filter: blur(22px) saturate(1.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  padding: 18px 16px 16px;
+  z-index: 8;
+  box-shadow:
+    0 32px 72px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(255,255,255,0.03) inset;
+  /* animasi show/hide */
+  transform-origin: bottom right;
+  transition:
+    opacity 0.28s cubic-bezier(.4,0,.2,1),
+    transform 0.28s cubic-bezier(.4,0,.2,1),
+    visibility 0s linear 0s;
+  pointer-events: auto;
+  user-select: none;
+}
+#iot-dashboard.db-hidden {
+  opacity: 0;
+  transform: scale(0.94) translateY(10px);
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.22s cubic-bezier(.4,0,.2,1),
+    transform 0.22s cubic-bezier(.4,0,.2,1),
+    visibility 0s linear 0.22s;
+}
+
+/* --- Header --- */
+.db-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.db-logo {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #c9631f 0%, #7c3d12 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff8ef;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(201,99,31,0.35);
+}
+.db-logo svg { width: 16px; height: 16px; }
+.db-title-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.db-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #f0e8d8;
+  letter-spacing: 0.2px;
+  line-height: 1;
+}
+.db-sub {
+  font-size: 9.5px;
+  color: rgba(240,232,216,0.38);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.db-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.22);
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  flex-shrink: 0;
+}
+.db-status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 5px #22c55eaa;
+  animation: pulse-green 2.4s ease-in-out infinite;
+}
+.db-status-text {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #22c55e;
+}
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 5px #22c55e88; }
+  50%       { box-shadow: 0 0 10px #22c55ecc; }
+}
+
+/* --- Sensor Row --- */
+.db-sensor-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+.db-sensor-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 13px;
+  padding: 11px 12px 10px;
+}
+.db-sensor-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.db-sensor-icon {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.db-sensor-icon.temp {
+  background: rgba(251,191,36,0.13);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.18);
+}
+.db-sensor-icon.hum {
+  background: rgba(96,165,250,0.13);
+  color: #60a5fa;
+  border: 1px solid rgba(96,165,250,0.18);
+}
+.db-sensor-icon svg { width: 13px; height: 13px; }
+.db-sensor-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(240,232,216,0.38);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.db-sensor-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0e8d8;
+  letter-spacing: -0.8px;
+  line-height: 1;
+  margin-bottom: 5px;
+  font-variant-numeric: tabular-nums;
+}
+.db-sensor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.db-sensor-status {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #34d399;
+  letter-spacing: 0.3px;
+  line-height: 1;
+  transition: color 0.4s ease;
+}
+.db-sensor-bar-bg {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.db-sensor-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1.2s ease, background 0.6s ease;
+}
+
+/* --- Divider --- */
+.db-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin-bottom: 12px;
+}
+
+/* --- Grid kartu perangkat --- */
+.db-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* --- Kartu perangkat --- */
+.db-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.065);
+  border-radius: 12px;
+  padding: 9px 11px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.12s ease;
+  position: relative;
+  overflow: hidden;
+}
+.db-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, var(--accent) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+.db-card.on::before  { opacity: 0.06; }
+.db-card.on {
+  border-color: rgba(255,255,255,0.12);
+}
+.db-card:hover       { background: rgba(255,255,255,0.065); }
+.db-card:hover:not(:active) { transform: translateX(-1px); }
+.db-card:active      { transform: scale(0.985); }
+
+/* --- Ikon --- */
+.db-icon {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(200,190,170,0.38);
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.db-icon svg { width: 16px; height: 16px; }
+.db-card.on .db-icon {
+  color: var(--accent);
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.15);
+}
+
+/* --- Info teks --- */
+.db-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.db-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(240,232,216,0.7);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+.db-card.on .db-name { color: #f0e8d8; }
+.db-loc {
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(240,232,216,0.28);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* --- Toggle switch --- */
+.db-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.db-track {
+  width: 34px; height: 19px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.09);
+  position: relative;
+  transition: background 0.24s ease, border-color 0.24s ease;
+}
+.db-card.on .db-track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.db-thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  transition: transform 0.24s cubic-bezier(.4,0,.2,1), background 0.24s ease;
+}
+.db-card.on .db-thumb {
+  transform: translateX(15px);
+  background: #ffffff;
+}
+.db-state-text {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(240,232,216,0.25);
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+.db-card.on .db-state-text { color: var(--accent); }
+
+/* hint sudah didefinisikan di atas */
+
+/* =====================================================================
+   ALARM BANNER — muncul di dashboard saat suhu/kelembapan kritis
+===================================================================== */
+.db-alarm-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: 10px;
+  padding: 8px 11px;
+  margin-bottom: 11px;
+  animation: alarm-pulse 1.2s ease-in-out infinite;
+}
+.db-alarm-banner svg {
+  width: 16px; height: 16px;
+  color: #f87171;
+  flex-shrink: 0;
+  stroke: #f87171;
+}
+.alarm-msg {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fca5a5;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+}
+@keyframes alarm-pulse {
+  0%, 100% { border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.12); }
+  50%       { border-color: rgba(239,68,68,0.75); background: rgba(239,68,68,0.22); }
+}

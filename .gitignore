@@ -1,0 +1,17 @@
+# Python virtual environment (jangan di-upload, buat baru di server)
+myenv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment / secrets
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db

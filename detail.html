@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>Detail Komponen AC — Pembelajaran 3D</title>
+<link rel="stylesheet" href="./css/gaya.css" />
+<link rel="stylesheet" href="./css/detail.css" />
+</head>
+<body>
+<div id="app">
+  <div id="loading"><div class="ring"></div><span>Menyusun model AC…</span></div>
+
+  <div id="detail-topbar">
+    <button id="btn-kembali-ruangan" class="topbar-btn">&larr; Kembali ke Ruangan</button>
+    <div id="detail-title">
+      <strong>Bongkar Unit AC Split</strong>
+      <span id="detail-subtitle">Pelajari fungsi setiap komponen</span>
+    </div>
+    <button id="btn-reset-tampilan" class="topbar-btn secondary">Reset Tampilan</button>
+  </div>
+
+  <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button">&#9776; Daftar Komponen</button>
+
+  <aside id="detail-sidebar">
+    <div id="info-card">
+      <h2 id="info-title">Tampilan Keseluruhan</h2>
+      <p id="info-desc">Klik salah satu komponen pada daftar di bawah, atau klik langsung pada model 3D, untuk mempelajari fungsi tiap bagian unit AC indoor.</p>
+    </div>
+    <div id="komponen-list"></div>
+  </aside>
+
+  <div id="detail-hint">Seret = putar &nbsp;•&nbsp; Scroll = zoom &nbsp;•&nbsp; Klik komponen untuk detail</div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="./js/detail/main-detail.js"></script>
+</body>
+</html>
