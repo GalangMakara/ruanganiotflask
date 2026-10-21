@@ -482,61 +482,66 @@ canvas{display:block;}
 }
 
 /* =====================================================================
+   BASE: pastikan semua elemen pakai border-box
+===================================================================== */
+#iot-dashboard, #iot-dashboard * { box-sizing: border-box; }
+
+/* =====================================================================
    RESPONSIF — Tablet & Mobile (≤768px)
-   Panel berubah jadi bottom-sheet dari bawah
 ===================================================================== */
 @media (max-width: 768px) {
 
-  /* Tombol hamburger: tetap pojok kiri atas, tidak bergeser */
   #db-toggle-btn {
-    top: 16px;
-    left: 16px;
-    right: auto;
-    bottom: auto;
+    top: 16px; left: 16px; right: auto; bottom: auto;
     transition: background 0.2s ease, color 0.2s ease,
                 transform 0.15s ease, box-shadow 0.2s ease;
   }
 
-  /* Panel: bottom-sheet, max 50vh agar scene 3D tetap terlihat */
   #iot-dashboard {
-    top: auto;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: auto; left: 0; right: 0; bottom: 0;
     width: 100%;
     border-right: none;
     border-top: 1px solid rgba(255,255,255,0.1);
     border-radius: 20px 20px 0 0;
-    padding: 8px 14px 28px;
+    padding: 8px 12px 28px;
     max-height: 42vh;
     overflow-y: auto;
+    overflow-x: hidden;
     transform-origin: bottom center;
     box-shadow: 0 -8px 40px rgba(0,0,0,0.55);
   }
 
-  /* Saat tersembunyi: geser ke bawah */
   #iot-dashboard.db-hidden {
     transform: translateY(110%);
     opacity: 1;
     visibility: hidden;
   }
 
-  /* Handle bar visual */
   #iot-dashboard::before {
     content: "";
     display: block;
-    width: 36px;
-    height: 4px;
+    width: 36px; height: 4px;
     background: rgba(255,255,255,0.2);
     border-radius: 2px;
     margin: 0 auto 12px;
   }
 
+  /* Card: tidak overflow kanan */
+  .db-card {
+    width: 100%;
+    padding: 9px 10px;
+    gap: 8px;
+    min-width: 0;
+  }
+  .db-info { min-width: 0; overflow: hidden; }
+  .db-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .db-toggle { flex-shrink: 0; }
+  .db-icon { flex-shrink: 0; }
+
   #hint { display: none; }
   #ac-panel { bottom: 72px; }
   .ac-label { max-width: min(190px, 55vw); }
   .db-sensor-value { font-size: 20px; }
-  .db-card { padding: 10px 12px; }
 }
 
 /* =====================================================================
@@ -544,17 +549,9 @@ canvas{display:block;}
 ===================================================================== */
 @media (max-width: 480px) {
 
-  #db-toggle-btn {
-    width: 42px;
-    height: 42px;
-    top: 12px;
-    left: 12px;
-  }
+  #db-toggle-btn { width: 42px; height: 42px; top: 12px; left: 12px; }
 
-  #iot-dashboard {
-    max-height: 40vh;   /* lebih pendek agar scene tetap terlihat */
-    padding: 8px 11px 24px;
-  }
+  #iot-dashboard { max-height: 40vh; padding: 8px 10px 24px; }
 
   .db-logo { width: 30px; height: 30px; border-radius: 9px; }
   .db-logo svg { width: 14px; height: 14px; }
@@ -562,38 +559,34 @@ canvas{display:block;}
   .db-sub { font-size: 9px; letter-spacing: 1px; }
   .db-status-text { display: none; }
   .db-status-pill { padding: 5px 7px; }
-  .db-sensor-value { font-size: 19px; }
+  .db-sensor-value { font-size: 18px; }
   .db-sensor-label { font-size: 8.5px; }
   .db-sensor-status { font-size: 9px; }
-  .db-card { padding: 9px 10px; gap: 9px; border-radius: 11px; }
-  .db-icon { width: 32px; height: 32px; border-radius: 8px; }
-  .db-icon svg { width: 15px; height: 15px; }
-  .db-name { font-size: 11.5px; }
-  .db-loc { font-size: 8.5px; }
-  .db-track { width: 32px; height: 18px; }
-  .db-thumb { width: 12px; height: 12px; }
-  .db-card.on .db-thumb { transform: translateX(14px); }
+  .db-card { padding: 8px 9px; gap: 8px; border-radius: 11px; }
+  .db-icon { width: 30px; height: 30px; border-radius: 8px; }
+  .db-icon svg { width: 14px; height: 14px; }
+  .db-name { font-size: 11px; }
+  .db-loc { font-size: 8px; }
+  .db-track { width: 30px; height: 17px; }
+  .db-thumb { width: 11px; height: 11px; }
+  .db-card.on .db-thumb { transform: translateX(13px); }
   .db-state-text { font-size: 8px; }
   #loading .ring { width: 38px; height: 38px; }
   #loading span { font-size: 10px; letter-spacing: 1.5px; }
 }
 
 /* =====================================================================
-   Safe area iPhone (notch & home indicator)
+   Safe area iPhone
 ===================================================================== */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   @media (max-width: 768px) {
-    #iot-dashboard {
-      padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    }
-    #db-toggle-btn {
-      top: calc(12px + env(safe-area-inset-top));
-    }
+    #iot-dashboard { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    #db-toggle-btn { top: calc(12px + env(safe-area-inset-top)); }
   }
 }
 
 /* =====================================================================
-   Landscape phone (tinggi ≤500px)
+   Landscape phone
 ===================================================================== */
 @media (max-height: 500px) and (orientation: landscape) {
   #iot-dashboard { max-height: 75vh; }

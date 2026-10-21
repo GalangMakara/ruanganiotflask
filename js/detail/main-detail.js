@@ -187,9 +187,9 @@ function updateToggleIcon() {
   }
 }
 
-// Tutup sidebar saat komponen dipilih di mobile (biar model terlihat)
+// Tutup sidebar setelah pilih komponen di mobile (selalu, agar model terlihat)
 function maybeCloseSidebar() {
-  if (window.innerWidth <= 760 && sidebarEl.classList.contains("open")) {
+  if (window.innerWidth <= 760) {
     sidebarEl.classList.remove("open");
     updateToggleIcon();
   }
