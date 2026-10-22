@@ -171,7 +171,38 @@ async function pollSensor() {
   updateSensorUI(data);
 }
 
+/* -----------------------------------------------------------------------
+   POLLING STATE PERANGKAT — setiap 3 detik
+   Ini yang memastikan semua device (A, B, C...) sinkron satu sama lain.
+   Kalau device A toggle lampu, device B akan tahu dalam maks 3 detik.
+----------------------------------------------------------------------- */
+async function pollDeviceState() {
+  const state = await apiGet("/api/control/state");
+  if (!state) return;
+
+  Object.keys(state).forEach(key => {
+    const on = !!state[key];
+
+    // Hanya update UI kalau state berbeda dari yang sekarang
+    // supaya tidak ada flicker saat user sedang klik
+    if (deviceState[key] === on) return;
+
+    deviceState[key] = on;
+
+    const card = document.querySelector(`.db-card[data-key="${key}"]`);
+    if (card) {
+      card.classList.toggle("on",  on);
+      card.classList.toggle("off", !on);
+      const txt = card.querySelector(".db-state-text");
+      if (txt) txt.textContent = on ? "ON" : "OFF";
+    }
+
+    if (deviceActions[key]) deviceActions[key](on);
+  });
+}
+
 setInterval(pollSensor, 2000);
+setInterval(pollDeviceState, 3000);  // sync state antar device tiap 3 detik
 
 /* -----------------------------------------------------------------------
    SYNC STATE AWAL DARI FLASK
@@ -411,8 +442,9 @@ function createDashboard() {
 
   /* ---- Sync state dari server saat pertama muat ---- */
   syncStateFromServer();
-  // Polling sensor pertama langsung
+  // Polling sensor & state pertama langsung (tidak nunggu interval)
   pollSensor();
+  pollDeviceState();
 }
 
 createDashboard();
